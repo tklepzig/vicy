@@ -97,6 +97,10 @@ body {
         ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
         monospace;
       font-size: inherit;
+
+      &[readonly] {
+        cursor: default;
+      }
     }
   }
 
