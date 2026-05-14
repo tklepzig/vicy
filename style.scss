@@ -50,6 +50,17 @@ body {
   }
 }
 
+.key-hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: oklch(0.75 0.15 29);
+  visibility: hidden;
+
+  &:not([hidden]) {
+    visibility: visible;
+  }
+}
+
 .key-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -79,8 +90,8 @@ body {
       border: none;
       outline: none;
       color: inherit;
-      font-family: inherit;
-      font-size: inherit;
+      font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+      font-size: var(--text-sm);
 
       &[readonly] {
         opacity: 0.6;

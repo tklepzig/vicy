@@ -48,6 +48,7 @@
               autocomplete="off"
             />
           </div>
+          <p class="key-hint" id="key-hint" hidden>Keys don't match</p>
           <div class="workspace">
             <div class="tile">
               <header></header>
@@ -118,6 +119,7 @@
       const cipher = document.getElementById("cipher");
       const encryptBtn = document.getElementById("encrypt-btn");
       const decryptBtn = document.getElementById("decrypt-btn");
+      const keyHint = document.getElementById("key-hint");
 
       let mode = "encrypt";
 
@@ -132,6 +134,8 @@
 
       const recalculate = () => {
         const keyValid = isValidKey(key.value, keyConfirm.value);
+        const keysTyped = key.value.length > 0 && keyConfirm.value.length > 0;
+        keyHint.hidden = !keysTyped || keyValid;
         encryptBtn.disabled = !keyValid;
         decryptBtn.disabled = !keyValid;
         if (mode === "encrypt") {
