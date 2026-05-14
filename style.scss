@@ -97,10 +97,6 @@ body {
         ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
         monospace;
       font-size: inherit;
-
-      &[readonly] {
-        opacity: 0.6;
-      }
     }
   }
 }
