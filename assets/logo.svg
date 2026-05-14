@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+
+  <!-- Background -->
+  <g id="background">
+    <rect width="512" height="512" fill="#0a0303"/>
+  </g>
+
+  <!-- Outer ring (border) -->
+  <g id="outer-ring">
+    <polygon id="outer-shape" points="256.00,25.60 404.10,79.50 482.90,215.99 455.53,371.20 334.80,472.51 177.20,472.51 56.47,371.20 29.10,215.99 107.90,79.50" fill="#5a1616"/>
+  </g>
+
+  <!-- Inner fill -->
+  <g id="inner-fill">
+    <polygon id="inner-shape" points="256.00,51.60 387.39,99.42 457.29,220.51 433.02,358.20 325.91,448.07 186.09,448.07 78.98,358.20 54.71,220.51 124.61,99.42" fill="#370e0e"/>
+  </g>
+
+  <!-- Cipher grid -->
+  <g id="cipher-grid">
+    <rect id="cell-mid-0-0" x="145.24" y="145.24" width="64.51" height="64.51" rx="10" fill="#9b3030"/>
+    <rect id="cell-dim-0-1" x="223.75" y="145.24" width="64.51" height="64.51" rx="10" fill="#732323"/>
+    <rect id="cell-mid-0-2" x="302.25" y="145.24" width="64.51" height="64.51" rx="10" fill="#9b3030"/>
+    <rect id="cell-dim-1-0" x="145.24" y="223.75" width="64.51" height="64.51" rx="10" fill="#732323"/>
+    <rect id="cell-accent" x="223.75" y="223.75" width="64.51" height="64.51" rx="10" fill="#c3372d"/>
+    <rect id="cell-dim-1-2" x="302.25" y="223.75" width="64.51" height="64.51" rx="10" fill="#732323"/>
+    <rect id="cell-mid-2-0" x="145.24" y="302.25" width="64.51" height="64.51" rx="10" fill="#9b3030"/>
+    <rect id="cell-dim-2-1" x="223.75" y="302.25" width="64.51" height="64.51" rx="10" fill="#732323"/>
+    <rect id="cell-dim-2-2" x="302.25" y="302.25" width="64.51" height="64.51" rx="10" fill="#732323"/>
+  </g>
+
+</svg>

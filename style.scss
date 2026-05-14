@@ -44,7 +44,7 @@ body {
 
   > article {
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     gap: var(--spacing);
     overflow: hidden;
   }
@@ -52,6 +52,7 @@ body {
 
 .key-hint {
   margin: 0;
+  padding-top: var(--padding-sm);
   font-size: var(--text-sm);
   color: oklch(0.75 0.15 29);
   visibility: hidden;
@@ -68,6 +69,7 @@ body {
 }
 
 .workspace {
+  grid-row: 3;
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
