@@ -37,12 +37,13 @@ const readLine = (prompt: string): Promise<string> =>
     });
   });
 
-const [mode] = process.argv.slice(2);
+const [mode, textArg] = process.argv.slice(2);
 
 if (mode !== "e" && mode !== "d") {
-  console.log("Usage: cli.ts [e|d]");
+  console.log("Usage: cli.ts [e|d] [text]");
   console.log("  e - Encrypt");
   console.log("  d - Decrypt");
+  console.log("  text - optional; prompted interactively if omitted");
   process.exit(1);
 }
 
@@ -54,7 +55,7 @@ if (!isValidKey(key, keyConfirm)) {
   process.exit(1);
 }
 
-const textOrCipher = await readLine(mode === "e" ? "Text: " : "Cipher: ");
+const textOrCipher = textArg ?? await readLine(mode === "e" ? "Text: " : "Cipher: ");
 
 if (!isValidText(textOrCipher)) {
   console.error("Error: Invalid input");

@@ -18,11 +18,11 @@ npm run build   # compiles TypeScript and SCSS
 ## CLI
 
 ```bash
-./cli.ts e   # encrypt
-./cli.ts d   # decrypt
+./cli.ts e [text]    # encrypt
+./cli.ts d [cipher]  # decrypt
 ```
 
-Key and text are prompted interactively; key input is hidden.
+Key is always prompted interactively with hidden input. Text/cipher can be passed as an argument or prompted interactively if omitted.
 
 ## Deploy
 
