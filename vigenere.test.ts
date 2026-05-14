@@ -1,4 +1,26 @@
-import { decrypt, encrypt, isValidKey, isValidText } from "./vigenere";
+import { decrypt, encrypt, hasInvalidChars, isValidKey, isValidText } from "./vigenere";
+
+describe("hasInvalidChars", () => {
+  it("returns false for an empty string", () => {
+    expect(hasInvalidChars("")).toBe(false);
+  });
+
+  it("returns false for a valid string", () => {
+    expect(hasInvalidChars("Hello World! 123")).toBe(false);
+  });
+
+  it("returns false for a string with a line break", () => {
+    expect(hasInvalidChars("line one\nline two")).toBe(false);
+  });
+
+  it("returns true for a string with an unsupported character", () => {
+    expect(hasInvalidChars("hello€world")).toBe(true);
+  });
+
+  it("returns true when the unsupported character is the only one", () => {
+    expect(hasInvalidChars("€")).toBe(true);
+  });
+});
 
 describe("isValidKey", () => {
   it("returns true for a valid key", () => {

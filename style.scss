@@ -99,6 +99,15 @@ body {
       font-size: inherit;
     }
   }
+
+  > footer:has(> .tile-hint[hidden]) {
+    display: none;
+  }
+}
+
+.tile-hint {
+  font-size: var(--text-xs);
+  color: oklch(0.75 0.15 29);
 }
 
 .mode-toggle {

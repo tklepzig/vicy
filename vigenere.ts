@@ -87,3 +87,6 @@ export const isValidText = (text: string) => {
 
   return true;
 };
+
+export const hasInvalidChars = (str: string): boolean =>
+  [...str].some((char) => !isValidChar(char) && !isLineBreak(char));

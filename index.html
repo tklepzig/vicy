@@ -60,7 +60,9 @@
                   placeholder="Text: .*{1,}"
                 ></textarea>
               </article>
-              <footer></footer>
+              <footer>
+                <span class="tile-hint" id="text-hint" hidden></span>
+              </footer>
             </div>
             <div class="mode-toggle">
               <div class="compound-commands">
@@ -98,7 +100,9 @@
                   placeholder="Cipher"
                 ></textarea>
               </article>
-              <footer></footer>
+              <footer>
+                <span class="tile-hint" id="cipher-hint" hidden></span>
+              </footer>
             </div>
           </div>
         </article>
@@ -126,6 +130,8 @@
       const encryptBtn = document.getElementById("encrypt-btn");
       const decryptBtn = document.getElementById("decrypt-btn");
       const keyHint = document.getElementById("key-hint");
+      const textHint = document.getElementById("text-hint");
+      const cipherHint = document.getElementById("cipher-hint");
       const copyBtn = document.getElementById("copy-btn");
 
       let mode = "encrypt";
@@ -143,7 +149,15 @@
 
       const recalculate = () => {
         const keyValid = isValidKey(key.value, keyConfirm.value);
-        if (!keyConfirmBlurred) {
+
+        const keyHasBadChars =
+          (key.value.length > 0 && hasInvalidChars(key.value)) ||
+          (keyConfirm.value.length > 0 && hasInvalidChars(keyConfirm.value));
+
+        if (keyHasBadChars) {
+          keyHint.textContent = "Key contains invalid characters";
+          keyHint.hidden = false;
+        } else if (!keyConfirmBlurred) {
           keyHint.hidden = true;
         } else if (key.value.length < 2) {
           keyHint.textContent = "Key too short (min. 2 chars)";
@@ -154,8 +168,10 @@
         } else {
           keyHint.hidden = true;
         }
+
         encryptBtn.disabled = !keyValid;
         decryptBtn.disabled = !keyValid;
+
         if (mode === "encrypt") {
           cipher.value =
             keyValid && isValidText(text.value)
@@ -167,6 +183,17 @@
               ? decrypt(cipher.value, key.value)
               : "";
         }
+
+        const textHasBadChars =
+          !text.readOnly && text.value.length > 0 && hasInvalidChars(text.value);
+        textHint.textContent = textHasBadChars ? "Contains invalid characters" : "";
+        textHint.hidden = !textHasBadChars;
+
+        const cipherHasBadChars =
+          !cipher.readOnly && cipher.value.length > 0 && hasInvalidChars(cipher.value);
+        cipherHint.textContent = cipherHasBadChars ? "Contains invalid characters" : "";
+        cipherHint.hidden = !cipherHasBadChars;
+
         const output = mode === "encrypt" ? cipher : text;
         copyBtn.hidden = output.value.length === 0;
         if (keyValid) sessionStorage.setItem("vicy_key", key.value);
