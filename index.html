@@ -82,12 +82,7 @@
                 ></button>
                 <div class="spacer flex"></div>
                 <div class="spacer"></div>
-                <button
-                  class="command"
-                  id="copy-btn"
-                  type="button"
-                  hidden
-                >
+                <button class="command" id="copy-btn" type="button" hidden>
                   Copy
                 </button>
                 <div class="spacer"></div>
@@ -136,45 +131,6 @@
       let mode = "encrypt";
       let keyConfirmBlurred = false;
 
-      // ── Key persistence ──────────────────────────────────────────────────
-
-      const hashKey = async (value) => {
-        const buffer = await crypto.subtle.digest(
-          "SHA-256",
-          new TextEncoder().encode(value)
-        );
-        return Array.from(new Uint8Array(buffer))
-          .map((byte) => byte.toString(16).padStart(2, "0"))
-          .join("");
-      };
-
-      const updateFingerprintHint = () => {
-        const stored = localStorage.getItem("vicy_key_hash");
-        keyConfirm.placeholder = stored ? "Confirm Key  •  welcome back" : "Confirm Key";
-      };
-
-      const persistKey = async (value) => {
-        sessionStorage.setItem("vicy_key", value);
-        const hash = await hashKey(value);
-        localStorage.setItem("vicy_key_hash", hash);
-        updateFingerprintHint();
-      };
-
-      // On key input: if it matches the stored fingerprint, auto-confirm
-      const onKeyInput = async () => {
-        const stored = localStorage.getItem("vicy_key_hash");
-        if (stored && key.value.length >= 2) {
-          const current = await hashKey(key.value);
-          if (current === stored) {
-            keyConfirm.value = key.value;
-            keyConfirmBlurred = true;
-          }
-        }
-        recalculate();
-      };
-
-      // ── Core logic ───────────────────────────────────────────────────────
-
       const setMode = (newMode) => {
         mode = newMode;
         encryptBtn.classList.toggle("is-active", mode === "encrypt");
@@ -213,7 +169,7 @@
         }
         const output = mode === "encrypt" ? cipher : text;
         copyBtn.hidden = output.value.length === 0;
-        if (keyValid) persistKey(key.value);
+        if (keyValid) sessionStorage.setItem("vicy_key", key.value);
       };
 
       const copyToClipboard = (button, content) => {
@@ -234,7 +190,7 @@
       });
       encryptBtn.addEventListener("click", () => setMode("encrypt"));
       decryptBtn.addEventListener("click", () => setMode("decrypt"));
-      key.addEventListener("input", onKeyInput);
+      key.addEventListener("input", recalculate);
       keyConfirm.addEventListener("input", recalculate);
       text.addEventListener("input", recalculate);
       cipher.addEventListener("input", recalculate);
@@ -247,7 +203,6 @@
         keyConfirmBlurred = true;
       }
 
-      updateFingerprintHint();
       setMode("encrypt");
     </script>
   </body>
