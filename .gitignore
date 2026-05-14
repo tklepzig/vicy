@@ -1,4 +1,5 @@
 node_modules/
+.venv/
 vigenere.js
 style.min.css
 style.min.css.map
