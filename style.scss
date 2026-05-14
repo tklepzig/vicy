@@ -1,5 +1,5 @@
-@import "ada-ui/scss/ada.blue";
-@import "ada-ui/scss/ada";
+@use "ada-ui/scss/ada.blue" as *;
+@use "ada-ui/scss/ada" as *;
 
 :root {
   --hue: 25;
