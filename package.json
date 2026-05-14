@@ -1,0 +1,18 @@
+{
+  "name": "vicy",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx --yes live-server .",
+    "build": "tsc && sass style.scss:style.min.css -s compressed --no-source-map",
+    "test": "tsc && npx --yes jest",
+    "tsc:watch": "tsc -w",
+    "style:watch": "sass --watch style.scss:style.min.css -s compressed"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "@types/jest": "*",
+    "ts-jest": "*",
+    "typescript": "*",
+    "sass": "*"
+  }
+}
