@@ -8,14 +8,16 @@ var CACHE_NAME = "vicy-cache-__BUILD_ID__";
 // so they correctly resolve to /vicy/foo even on a GitHub Pages subpath.
 var urlsToCache = [
   "./",
-  "./manifest.json",
+  "./manifest.webmanifest",
   "./favicon.ico",
   "./sw.js",
   "./vigenere.js",
   "./style.min.css",
   "./assets/logo-192.png",
   "./assets/logo-512.png",
-  "https://fonts.googleapis.com/css?family=Open+Sans",
+  "./assets/logo-192-maskable.png",
+  "./assets/logo-512-maskable.png",
+  "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600",
 ];
 
 // LIFECYCLE: INSTALL
@@ -28,7 +30,7 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
       return cache.addAll(urlsToCache);
-    })
+    }),
   );
   self.skipWaiting();
 });
@@ -42,15 +44,22 @@ self.addEventListener("install", function (event) {
 //    until they reload — they'd still be using the old SW (or no SW at all).
 self.addEventListener("activate", function (event) {
   event.waitUntil(
-    caches.keys().then(function (cacheNames) {
-      return Promise.all(
-        cacheNames
-          .filter(function (name) { return name !== CACHE_NAME; })
-          .map(function (name) { return caches.delete(name); })
-      );
-    }).then(function () {
-      return self.clients.claim();
-    })
+    caches
+      .keys()
+      .then(function (cacheNames) {
+        return Promise.all(
+          cacheNames
+            .filter(function (name) {
+              return name !== CACHE_NAME;
+            })
+            .map(function (name) {
+              return caches.delete(name);
+            }),
+        );
+      })
+      .then(function () {
+        return self.clients.claim();
+      }),
   );
 });
 
@@ -86,6 +95,6 @@ self.addEventListener("fetch", function (event) {
 
         return response;
       });
-    })
+    }),
   );
 });

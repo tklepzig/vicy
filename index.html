@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -10,14 +10,14 @@
       name="viewport"
       content="user-scalable=yes, initial-scale=1.0, maximum-scale=10.0, width=device-width"
     />
-<title>Vicy</title>
+    <title>Vicy</title>
     <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600"
       rel="stylesheet"
     />
     <link href="style.min.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="favicon.ico" />
-    <link rel="manifest" href="manifest.json" />
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
@@ -26,33 +26,77 @@
       }
     </script>
   </head>
-
   <body>
     <div id="root">
-      <article>
-        <input id="key" autoFocus placeholder="Key: .*{2,}" type="password" />
-        <input id="key-confirm" placeholder="Confirm Key" type="password" />
-        <textarea
-          spellcheck="false"
-          autocomplete="off"
-          id="text"
-          placeholder="Text: .*{1,}"
-          rows="3"
-        ></textarea>
-        <button id="encrypt" class="crypt" type="button" disabled>
-          Encrypt
-        </button>
-        <button id="decrypt" class="crypt" type="button" disabled>
-          Decrypt
-        </button>
-        <textarea
-          spellcheck="false"
-          autocomplete="off"
-          id="cipher"
-          placeholder="Cipher"
-          rows="3"
-        ></textarea>
-      </article>
+      <div class="panel">
+        <header></header>
+        <article>
+          <div class="key-row">
+            <input
+              class="input"
+              id="key"
+              type="password"
+              autofocus
+              placeholder="Key: .*{2,}"
+              autocomplete="off"
+            />
+            <input
+              class="input"
+              id="key-confirm"
+              type="password"
+              placeholder="Confirm Key"
+              autocomplete="off"
+            />
+          </div>
+          <div class="workspace">
+            <div class="tile">
+              <header></header>
+              <article>
+                <textarea
+                  id="text"
+                  spellcheck="false"
+                  autocomplete="off"
+                  placeholder="Text: .*{1,}"
+                ></textarea>
+              </article>
+              <footer></footer>
+            </div>
+            <div class="mode-toggle">
+              <div class="compound-commands">
+                <div class="spacer"></div>
+                <button
+                  class="command is-active"
+                  id="encrypt-btn"
+                  type="button"
+                  data-label="Encrypt →"
+                  data-abbr="Encrypt"
+                ></button>
+                <button
+                  class="command"
+                  id="decrypt-btn"
+                  type="button"
+                  data-label="← Decrypt"
+                  data-abbr="Decrypt"
+                ></button>
+                <div class="spacer"></div>
+              </div>
+            </div>
+            <div class="tile">
+              <header></header>
+              <article>
+                <textarea
+                  id="cipher"
+                  spellcheck="false"
+                  autocomplete="off"
+                  placeholder="Cipher"
+                ></textarea>
+              </article>
+              <footer></footer>
+            </div>
+          </div>
+        </article>
+        <footer></footer>
+      </div>
     </div>
 
     <script>
@@ -61,35 +105,56 @@
     </script>
     <script src="vigenere.js"></script>
     <script>
+      const mobileQuery = window.matchMedia("(max-width: 640px)");
+      const compoundCommands = document.querySelector(".compound-commands");
+      const updateToggleLayout = () =>
+        compoundCommands.classList.toggle("vertical", !mobileQuery.matches);
+      mobileQuery.addEventListener("change", updateToggleLayout);
+      updateToggleLayout();
+
       const key = document.getElementById("key");
       const keyConfirm = document.getElementById("key-confirm");
       const text = document.getElementById("text");
       const cipher = document.getElementById("cipher");
-      const encryptButton = document.getElementById("encrypt");
-      const decryptButton = document.getElementById("decrypt");
+      const encryptBtn = document.getElementById("encrypt-btn");
+      const decryptBtn = document.getElementById("decrypt-btn");
 
-      const check = () => {
-        encryptButton.disabled =
-          !isValidKey(key.value, keyConfirm.value) || !isValidText(text.value);
-        decryptButton.disabled =
-          !isValidKey(key.value, keyConfirm.value) ||
-          !isValidText(cipher.value);
+      let mode = "encrypt";
+
+      const setMode = (newMode) => {
+        mode = newMode;
+        encryptBtn.classList.toggle("is-active", mode === "encrypt");
+        decryptBtn.classList.toggle("is-active", mode === "decrypt");
+        text.readOnly = mode === "decrypt";
+        cipher.readOnly = mode === "encrypt";
+        recalculate();
       };
 
-      const handleEncrypt = () => {
-        cipher.value = encrypt(text.value, key.value);
+      const recalculate = () => {
+        const keyValid = isValidKey(key.value, keyConfirm.value);
+        encryptBtn.disabled = !keyValid;
+        decryptBtn.disabled = !keyValid;
+        if (mode === "encrypt") {
+          cipher.value =
+            keyValid && isValidText(text.value)
+              ? encrypt(text.value, key.value)
+              : "";
+        } else {
+          text.value =
+            keyValid && isValidText(cipher.value)
+              ? decrypt(cipher.value, key.value)
+              : "";
+        }
       };
 
-      const handleDecrypt = () => {
-        text.value = decrypt(cipher.value, key.value);
-      };
+      encryptBtn.addEventListener("click", () => setMode("encrypt"));
+      decryptBtn.addEventListener("click", () => setMode("decrypt"));
+      key.addEventListener("input", recalculate);
+      keyConfirm.addEventListener("input", recalculate);
+      text.addEventListener("input", recalculate);
+      cipher.addEventListener("input", recalculate);
 
-      encryptButton.addEventListener("click", handleEncrypt, false);
-      decryptButton.addEventListener("click", handleDecrypt, false);
-      key.addEventListener("input", check, false);
-      keyConfirm.addEventListener("input", check, false);
-      text.addEventListener("input", check, false);
-      cipher.addEventListener("input", check, false);
+      setMode("encrypt");
     </script>
   </body>
 </html>

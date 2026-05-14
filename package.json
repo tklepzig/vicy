@@ -3,16 +3,17 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx --yes live-server .",
-    "build": "tsc && sass style.scss:style.min.css -s compressed --no-source-map",
+    "build": "tsc && sass --load-path=node_modules style.scss:style.min.css -s compressed --no-source-map",
     "test": "tsc && npx --yes jest",
     "tsc:watch": "tsc -w",
-    "style:watch": "sass --watch style.scss:style.min.css -s compressed"
+    "style:watch": "sass --load-path=node_modules --watch style.scss:style.min.css -s compressed"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "@types/jest": "*",
-    "ts-jest": "*",
-    "typescript": "*",
-    "sass": "*"
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.7.0",
+    "ada-ui": "^6.0.1",
+    "sass": "^1.99.0",
+    "ts-jest": "^29.4.9",
+    "typescript": "^6.0.3"
   }
 }
