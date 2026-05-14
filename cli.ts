@@ -1,5 +1,5 @@
-#!/usr/bin/env -S npx ts-node
-import { isValidKey, isValidText, encrypt, decrypt } from "./vigenere.js";
+#!/usr/bin/env -S node --experimental-strip-types
+import { isValidKey, isValidText, encrypt, decrypt } from "./vigenere.ts";
 
 // @ts-ignore
 if (typeof window === "undefined") {

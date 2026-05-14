@@ -22,7 +22,7 @@ npm run build   # compiles TypeScript and SCSS
 ./cli.ts d <key> <key> <cipher>      # decrypt
 ```
 
-Requires `ts-node` (via `npx`, no global install needed). The key must be passed twice — the second as confirmation.
+The key must be passed twice — the second as confirmation.
 
 ## Deploy
 
