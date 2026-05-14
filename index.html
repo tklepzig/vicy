@@ -150,9 +150,7 @@
 
       const updateFingerprintHint = () => {
         const stored = localStorage.getItem("vicy_key_hash");
-        keyConfirm.placeholder = stored
-          ? `Confirm Key  •  last: ${stored.slice(0, 8)}`
-          : "Confirm Key";
+        keyConfirm.placeholder = stored ? "Confirm Key  •  welcome back" : "Confirm Key";
       };
 
       const persistKey = async (value) => {

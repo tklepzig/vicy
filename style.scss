@@ -112,7 +112,6 @@ body {
     background-color: var(--color500);
   }
 
-
   #copy-btn[hidden] {
     display: none;
   }
@@ -124,6 +123,7 @@ body {
 
   .spacer:has(+ #copy-btn[hidden]) {
     display: block;
+    min-width: var(--command-min-size);
     min-height: var(--command-min-size);
   }
 }
@@ -155,7 +155,7 @@ body {
       display: none;
     }
 
-    > .command {
+    > .command:not(#copy-btn) {
       flex: 1;
     }
   }
