@@ -17,6 +17,21 @@ self.addEventListener("install", function (event) {
       return cache.addAll(urlsToCache);
     })
   );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", function (event) {
+  event.waitUntil(
+    caches.keys().then(function (cacheNames) {
+      return Promise.all(
+        cacheNames
+          .filter(function (name) { return name !== CACHE_NAME; })
+          .map(function (name) { return caches.delete(name); })
+      );
+    }).then(function () {
+      return self.clients.claim();
+    })
+  );
 });
 
 self.addEventListener("fetch", function (event) {
