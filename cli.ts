@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --experimental-strip-types
+#!/usr/bin/env node
 import { isValidKey, isValidText, encrypt, decrypt } from "./vigenere.ts";
 
 // @ts-ignore
