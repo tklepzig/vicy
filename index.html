@@ -36,7 +36,6 @@
               class="input"
               id="key"
               type="password"
-              autofocus
               placeholder="Key: .*{2,}"
               autocomplete="off"
             />
@@ -231,6 +230,7 @@
       }
 
       setMode("encrypt");
+      (sessionKey ? text : key).focus();
     </script>
   </body>
 </html>

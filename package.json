@@ -6,6 +6,7 @@
     "start": "npx --yes live-server .",
     "build": "tsc && sass --load-path=node_modules style.scss:style.min.css -s compressed --no-source-map",
     "test": "tsc && npx --yes jest",
+    "dev": "npx --yes concurrently \"tsc -w\" \"npm run style:watch\" \"npm run start\"",
     "tsc:watch": "tsc -w",
     "style:watch": "sass --load-path=node_modules --watch style.scss:style.min.css -s compressed"
   },
