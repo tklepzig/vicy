@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "Vicy",
   "short_name": "Vicy",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "orientation": "any",
   "theme_color": "#782222",
