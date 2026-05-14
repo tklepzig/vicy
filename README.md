@@ -1,28 +1,20 @@
-# Run as CLI
+# Vicy
 
-## Install necessary dependency (only once)
+A Vigenère cipher PWA — encrypt and decrypt text in the browser. Works offline once visited.
 
-    npm i
+## Development
 
-## Run CLI
+```bash
+npm install
+npm start       # dev server at http://localhost:8080
+```
 
-    ./vicy.sh
+## Build
 
-# Run in browser
+```bash
+npm run build   # compiles TypeScript and SCSS
+```
 
-## Transpile to js
+## Deploy
 
-    npm run build
-
-## Serve via http
-
-    npm start
-
-## Serve via https (allows to install it as PWA)
-
-Use the makefile of certificates/ to create a valid ssl certificate and rootCA
-(which should only be temporarily imported into Chrome since after installing vicy
-it is available offline and the rootCA is not necessary anymore)
-and run the following (also from certificates/)
-
-    ./serve.sh <certName> ../apps/vicy
+Pushes to `master` automatically deploy to GitHub Pages via GitHub Actions.
