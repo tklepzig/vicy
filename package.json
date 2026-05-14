@@ -1,6 +1,7 @@
 {
   "name": "vicy",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "start": "npx --yes live-server .",
     "build": "tsc && sass --load-path=node_modules style.scss:style.min.css -s compressed --no-source-map",

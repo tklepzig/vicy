@@ -18,11 +18,11 @@ npm run build   # compiles TypeScript and SCSS
 ## CLI
 
 ```bash
-./cli.ts e <key> <key> <plaintext>   # encrypt
-./cli.ts d <key> <key> <cipher>      # decrypt
+./cli.ts e   # encrypt
+./cli.ts d   # decrypt
 ```
 
-The key must be passed twice — the second as confirmation.
+Key and text are prompted interactively; key input is hidden.
 
 ## Deploy
 
