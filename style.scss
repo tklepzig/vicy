@@ -103,7 +103,10 @@ body {
 
 .mode-toggle {
   display: grid;
-  align-items: center;
+
+  .compound-commands {
+    height: 100%;
+  }
 }
 
 .command.is-active:not(:disabled) {
@@ -132,6 +135,10 @@ body {
 
   .mode-toggle .compound-commands {
     width: 100%;
+
+    > .spacer.flex {
+      display: none;
+    }
 
     > .command {
       flex: 1;
