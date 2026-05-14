@@ -1,13 +1,13 @@
 var CACHE_NAME = "vicy-cache-__BUILD_ID__";
 var urlsToCache = [
-  "/",
-  "/manifest.json",
-  "/favicon.ico",
-  "/sw.js",
-  "/vigenere.js",
-  "/style.min.css",
-  "/assets/logo-192.png",
-  "/assets/logo-512.png",
+  "./",
+  "./manifest.json",
+  "./favicon.ico",
+  "./sw.js",
+  "./vigenere.js",
+  "./style.min.css",
+  "./assets/logo-192.png",
+  "./assets/logo-512.png",
   "https://fonts.googleapis.com/css?family=Open+Sans",
 ];
 
