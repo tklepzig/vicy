@@ -82,6 +82,15 @@
                 ></button>
                 <div class="spacer flex"></div>
                 <div class="spacer"></div>
+                <button
+                  class="command"
+                  id="copy-btn"
+                  type="button"
+                  hidden
+                >
+                  Copy
+                </button>
+                <div class="spacer"></div>
               </div>
             </div>
             <div class="tile">
@@ -122,6 +131,7 @@
       const encryptBtn = document.getElementById("encrypt-btn");
       const decryptBtn = document.getElementById("decrypt-btn");
       const keyHint = document.getElementById("key-hint");
+      const copyBtn = document.getElementById("copy-btn");
 
       let mode = "encrypt";
       let keyConfirmBlurred = false;
@@ -132,6 +142,7 @@
         decryptBtn.classList.toggle("is-active", mode === "decrypt");
         text.readOnly = mode === "decrypt";
         cipher.readOnly = mode === "encrypt";
+        copyBtn.hidden = true;
         recalculate();
       };
 
@@ -161,7 +172,21 @@
               ? decrypt(cipher.value, key.value)
               : "";
         }
+        const output = mode === "encrypt" ? cipher : text;
+        copyBtn.hidden = output.value.length === 0;
       };
+
+      const copyToClipboard = (button, content) => {
+        navigator.clipboard.writeText(content).then(() => {
+          button.textContent = "Copied";
+          setTimeout(() => (button.textContent = "Copy"), 1500);
+        });
+      };
+
+      copyBtn.addEventListener("click", () => {
+        const output = mode === "encrypt" ? cipher : text;
+        copyToClipboard(copyBtn, output.value);
+      });
 
       keyConfirm.addEventListener("blur", () => {
         keyConfirmBlurred = true;

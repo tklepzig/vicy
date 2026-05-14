@@ -2,7 +2,9 @@
 @import "ada-ui/scss/ada";
 
 :root {
-  --hue: 15;
+  --hue: 25;
+  --l-base: 0.28;
+  --c-base: 0.09;
 }
 
 html,
@@ -51,7 +53,6 @@ body {
 }
 
 .key-hint {
-  padding-top: var(--padding-sm);
   font-size: var(--text-sm);
   color: oklch(0.75 0.15 29);
   visibility: hidden;
@@ -65,7 +66,6 @@ body {
 .key-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr auto;
   gap: var(--spacing);
 }
 
@@ -107,10 +107,25 @@ body {
   .compound-commands {
     height: 100%;
   }
-}
 
-.command.is-active:not(:disabled) {
-  background-color: var(--color500);
+  .command.is-active:not(:disabled) {
+    background-color: var(--color500);
+  }
+
+
+  #copy-btn[hidden] {
+    display: none;
+  }
+
+  // Placeholder spacer: invisible when copy-btn is present, sized as a command button when it's not
+  .spacer:has(+ #copy-btn) {
+    display: none;
+  }
+
+  .spacer:has(+ #copy-btn[hidden]) {
+    display: block;
+    min-height: var(--command-min-size);
+  }
 }
 
 @media (max-width: 640px) {
