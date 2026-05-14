@@ -1,4 +1,5 @@
-import { isValidKey, isValidText, encrypt, decrypt } from "./vigenere";
+#!/usr/bin/env -S npx ts-node
+import { isValidKey, isValidText, encrypt, decrypt } from "./vigenere.js";
 
 // @ts-ignore
 if (typeof window === "undefined") {

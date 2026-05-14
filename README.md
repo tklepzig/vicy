@@ -15,6 +15,15 @@ npm start       # dev server at http://localhost:8080
 npm run build   # compiles TypeScript and SCSS
 ```
 
+## CLI
+
+```bash
+./cli.ts e <key> <key> <plaintext>   # encrypt
+./cli.ts d <key> <key> <cipher>      # decrypt
+```
+
+Requires `ts-node` (via `npx`, no global install needed). The key must be passed twice — the second as confirmation.
+
 ## Deploy
 
 Pushes to `master` automatically deploy to GitHub Pages via GitHub Actions.
