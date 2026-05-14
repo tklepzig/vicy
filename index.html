@@ -47,8 +47,8 @@
               placeholder="Confirm Key"
               autocomplete="off"
             />
+            <span class="key-hint" id="key-hint" hidden></span>
           </div>
-          <p class="key-hint" id="key-hint" hidden>Keys don't match</p>
           <div class="workspace">
             <div class="tile">
               <header></header>
@@ -122,6 +122,7 @@
       const keyHint = document.getElementById("key-hint");
 
       let mode = "encrypt";
+      let keyConfirmBlurred = false;
 
       const setMode = (newMode) => {
         mode = newMode;
@@ -134,8 +135,17 @@
 
       const recalculate = () => {
         const keyValid = isValidKey(key.value, keyConfirm.value);
-        const keysTyped = key.value.length > 0 && keyConfirm.value.length > 0;
-        keyHint.hidden = !keysTyped || keyValid;
+        if (!keyConfirmBlurred) {
+          keyHint.hidden = true;
+        } else if (key.value.length < 2) {
+          keyHint.textContent = "Key too short (min. 2 chars)";
+          keyHint.hidden = false;
+        } else if (key.value !== keyConfirm.value) {
+          keyHint.textContent = "Keys don't match";
+          keyHint.hidden = false;
+        } else {
+          keyHint.hidden = true;
+        }
         encryptBtn.disabled = !keyValid;
         decryptBtn.disabled = !keyValid;
         if (mode === "encrypt") {
@@ -151,6 +161,10 @@
         }
       };
 
+      keyConfirm.addEventListener("blur", () => {
+        keyConfirmBlurred = true;
+        recalculate();
+      });
       encryptBtn.addEventListener("click", () => setMode("encrypt"));
       decryptBtn.addEventListener("click", () => setMode("decrypt"));
       key.addEventListener("input", recalculate);
