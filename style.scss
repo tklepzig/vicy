@@ -47,7 +47,6 @@ body {
   > article {
     display: grid;
     grid-template-rows: auto 1fr;
-    gap: var(--spacing);
     overflow: hidden;
   }
 }
@@ -61,6 +60,26 @@ body {
   &:not([hidden]) {
     visibility: visible;
   }
+}
+
+.key-collapsible {
+  display: grid;
+  grid-template-rows: 1fr;
+  overflow: hidden;
+  margin-bottom: var(--spacing);
+  transition:
+    grid-template-rows 0.2s ease,
+    margin-bottom 0.2s ease;
+
+  &.collapsed {
+    grid-template-rows: 0fr;
+    margin-bottom: 0;
+  }
+}
+
+.key-collapsible-inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .key-row {
@@ -105,7 +124,8 @@ body {
   }
 
   > footer:has(> .tile-hint[hidden]) {
-    display: none;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 

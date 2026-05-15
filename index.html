@@ -31,22 +31,26 @@
       <div class="panel">
         <header></header>
         <article>
-          <div class="key-row">
-            <input
-              class="input"
-              id="key"
-              type="password"
-              placeholder="Key: .*{2,}"
-              autocomplete="off"
-            />
-            <input
-              class="input"
-              id="key-confirm"
-              type="password"
-              placeholder="Confirm Key"
-              autocomplete="off"
-            />
-            <span class="key-hint" id="key-hint" hidden></span>
+          <div class="key-collapsible" id="key-collapsible">
+            <div class="key-collapsible-inner">
+              <div class="key-row">
+                <input
+                  class="input"
+                  id="key"
+                  type="password"
+                  placeholder="Key: .*{2,}"
+                  autocomplete="off"
+                />
+                <input
+                  class="input"
+                  id="key-confirm"
+                  type="password"
+                  placeholder="Confirm Key"
+                  autocomplete="off"
+                />
+                <span class="key-hint" id="key-hint" hidden></span>
+              </div>
+            </div>
           </div>
           <div class="workspace">
             <div class="tile">
@@ -66,20 +70,21 @@
             <div class="mode-toggle">
               <div class="compound-commands">
                 <div class="spacer"></div>
+                <button class="command outline" id="key-toggle-btn" type="button">Key</button>
                 <div class="spacer flex desktop-only"></div>
                 <button
                   class="command is-active"
                   id="encrypt-btn"
                   type="button"
-                  data-label="Encrypt →"
-                  data-abbr="Encrypt"
+                  data-label="Encrypt"
+                  data-abbr="Enc"
                 ></button>
                 <button
                   class="command"
                   id="decrypt-btn"
                   type="button"
-                  data-label="← Decrypt"
-                  data-abbr="Decrypt"
+                  data-label="Decrypt"
+                  data-abbr="Dec"
                 ></button>
                 <div class="spacer flex"></div>
                 <div class="spacer"></div>
@@ -132,9 +137,23 @@
       const textHint = document.getElementById("text-hint");
       const cipherHint = document.getElementById("cipher-hint");
       const copyBtn = document.getElementById("copy-btn");
+      const keyToggleBtn = document.getElementById("key-toggle-btn");
+      const keyCollapsible = document.getElementById("key-collapsible");
 
       let mode = "encrypt";
       let keyConfirmBlurred = false;
+      let keyCollapsed = false;
+
+      const collapseKey = (collapsed, animated = true) => {
+        if (!animated) keyCollapsible.style.transition = "none";
+        keyCollapsed = collapsed;
+        keyCollapsible.classList.toggle("collapsed", collapsed);
+        keyToggleBtn.classList.toggle("is-active", !collapsed);
+        keyToggleBtn.classList.toggle("key-set", collapsed && isValidKey(key.value, keyConfirm.value));
+        if (!animated) requestAnimationFrame(() => requestAnimationFrame(() => keyCollapsible.style.transition = ""));
+      };
+
+      keyToggleBtn.addEventListener("click", () => collapseKey(!keyCollapsed));
 
       const setMode = (newMode) => {
         mode = newMode;
@@ -204,6 +223,7 @@
         const output = mode === "encrypt" ? cipher : text;
         copyBtn.hidden = output.value.length === 0;
         if (keyValid) sessionStorage.setItem("vicy_key", key.value);
+        keyToggleBtn.classList.toggle("key-set", keyCollapsed && keyValid);
       };
 
       const copyToClipboard = (button, content) => {
@@ -238,6 +258,7 @@
       }
 
       setMode("encrypt");
+      collapseKey(!!sessionKey, false);
       (sessionKey ? text : key).focus();
     </script>
   </body>
