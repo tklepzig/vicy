@@ -60,7 +60,7 @@
                   id="text"
                   spellcheck="false"
                   autocomplete="off"
-                  placeholder="Text: .*{1,}"
+                  placeholder="Text"
                 ></textarea>
               </article>
               <footer>
@@ -70,7 +70,13 @@
             <div class="mode-toggle">
               <div class="compound-commands">
                 <div class="spacer"></div>
-                <button class="command outline" id="key-toggle-btn" type="button">Key</button>
+                <button
+                  class="command outline"
+                  id="key-toggle-btn"
+                  type="button"
+                >
+                  Key
+                </button>
                 <div class="spacer flex desktop-only"></div>
                 <button
                   class="command is-active"
@@ -149,8 +155,14 @@
         keyCollapsed = collapsed;
         keyCollapsible.classList.toggle("collapsed", collapsed);
         keyToggleBtn.classList.toggle("is-active", !collapsed);
-        keyToggleBtn.classList.toggle("key-set", collapsed && isValidKey(key.value, keyConfirm.value));
-        if (!animated) requestAnimationFrame(() => requestAnimationFrame(() => keyCollapsible.style.transition = ""));
+        keyToggleBtn.classList.toggle(
+          "key-set",
+          collapsed && isValidKey(key.value, keyConfirm.value),
+        );
+        if (!animated)
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => (keyCollapsible.style.transition = "")),
+          );
       };
 
       keyToggleBtn.addEventListener("click", () => collapseKey(!keyCollapsed));
