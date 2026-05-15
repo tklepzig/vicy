@@ -66,7 +66,7 @@
             <div class="mode-toggle">
               <div class="compound-commands">
                 <div class="spacer"></div>
-                <div class="spacer flex"></div>
+                <div class="spacer flex desktop-only"></div>
                 <button
                   class="command is-active"
                   id="encrypt-btn"
@@ -184,13 +184,21 @@
         }
 
         const textHasBadChars =
-          !text.readOnly && text.value.length > 0 && hasInvalidChars(text.value);
-        textHint.textContent = textHasBadChars ? "Contains invalid characters" : "";
+          !text.readOnly &&
+          text.value.length > 0 &&
+          hasInvalidChars(text.value);
+        textHint.textContent = textHasBadChars
+          ? "Contains invalid characters"
+          : "";
         textHint.hidden = !textHasBadChars;
 
         const cipherHasBadChars =
-          !cipher.readOnly && cipher.value.length > 0 && hasInvalidChars(cipher.value);
-        cipherHint.textContent = cipherHasBadChars ? "Contains invalid characters" : "";
+          !cipher.readOnly &&
+          cipher.value.length > 0 &&
+          hasInvalidChars(cipher.value);
+        cipherHint.textContent = cipherHasBadChars
+          ? "Contains invalid characters"
+          : "";
         cipherHint.hidden = !cipherHasBadChars;
 
         const output = mode === "encrypt" ? cipher : text;

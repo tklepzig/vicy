@@ -164,12 +164,8 @@ body {
   .mode-toggle .compound-commands {
     width: 100%;
 
-    > .spacer.flex {
+    > .spacer.desktop-only {
       display: none;
-    }
-
-    > .command:not(#copy-btn) {
-      flex: 1;
     }
   }
 }
