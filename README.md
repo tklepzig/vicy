@@ -24,6 +24,15 @@ npm run build   # compiles TypeScript and SCSS
 
 Key is always prompted interactively with hidden input. Text/cipher can be passed as an argument or prompted interactively if omitted.
 
+## Updating fonts
+
+Fonts are self-hosted in `assets/fonts/` (Open Sans + Source Code Pro, latin subset only — sufficient for the full cipher alphabet including §ÄÖÜßäöü).
+To pick up a new version from Google Fonts:
+
+```bash
+./scripts/update-fonts.sh
+```
+
 ## Deploy
 
 Pushes to `master` automatically deploy to GitHub Pages via GitHub Actions.

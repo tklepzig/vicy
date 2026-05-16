@@ -1,6 +1,22 @@
 @use "ada-ui/scss/ada.blue" as *;
 @use "ada-ui/scss/ada" as *;
 
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url("./assets/fonts/open-sans-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("./assets/fonts/source-code-pro-latin.woff2") format("woff2");
+}
+
 :root {
   --hue: 25;
   --l-base: 0.28;
@@ -112,9 +128,7 @@ body {
       border: none;
       outline: none;
       color: inherit;
-      font-family:
-        ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
-        monospace;
+      font-family: "Source Code Pro", monospace;
       font-size: inherit;
 
       &[readonly] {

@@ -17,7 +17,8 @@ var urlsToCache = [
   "./assets/logo-512.png",
   "./assets/logo-192-maskable.png",
   "./assets/logo-512-maskable.png",
-  "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600",
+  "./assets/fonts/open-sans-latin.woff2",
+  "./assets/fonts/source-code-pro-latin.woff2",
 ];
 
 // LIFECYCLE: INSTALL
