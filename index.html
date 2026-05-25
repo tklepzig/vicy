@@ -167,8 +167,6 @@
         mode = newMode;
         encryptBtn.classList.toggle("is-active", mode === "encrypt");
         decryptBtn.classList.toggle("is-active", mode === "decrypt");
-        text.readOnly = mode === "decrypt";
-        cipher.readOnly = mode === "encrypt";
         copyBtn.hidden = true;
         recalculate();
       };
@@ -197,6 +195,8 @@
 
         encryptBtn.disabled = !keyValid;
         decryptBtn.disabled = !keyValid;
+        text.readOnly = !keyValid || mode === "decrypt";
+        cipher.readOnly = !keyValid || mode === "encrypt";
 
         if (mode === "encrypt") {
           cipher.value =
