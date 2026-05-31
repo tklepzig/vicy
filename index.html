@@ -14,13 +14,8 @@
     <link href="style.min.css" rel="stylesheet" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="favicon.ico" />
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("sw.js");
-        });
-      }
-    </script>
+    <!-- SW registration lives in the offline-status block at the end of <body>
+         so a registration failure can be caught and surfaced via the badge. -->
   </head>
   <body>
     <div id="root">
@@ -112,7 +107,9 @@
             </div>
           </div>
         </article>
-        <footer></footer>
+        <footer>
+          <span class="offline-status" id="offline-status" hidden></span>
+        </footer>
       </div>
     </div>
 

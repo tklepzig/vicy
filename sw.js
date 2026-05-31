@@ -22,18 +22,30 @@ var urlsToCache = [
   "./assets/fonts/source-code-pro-latin.woff2",
 ];
 
+// Precache each URL individually with allSettled rather than cache.addAll.
+// addAll is atomic: one 404 or network blip rejects the whole batch, the install
+// promise rejects, and the SW never activates — a silent total offline failure.
+// Per-URL add lets us cache everything reachable, activate regardless, and let
+// the readiness check (below) report exactly which assets are missing.
+function precache() {
+  return caches.open(CACHE_NAME).then(function (cache) {
+    return Promise.allSettled(
+      urlsToCache.map(function (url) {
+        return cache.add(url);
+      }),
+    );
+  });
+}
+
 // LIFECYCLE: INSTALL
-// Fired when a new SW version is downloaded. Pre-fetches and caches all listed assets.
-// event.waitUntil() keeps the SW in the installing state until the promise resolves —
-// if caching fails, the install fails and the SW is discarded.
-// skipWaiting() skips the normal waiting phase (where the new SW would wait for all
-// tabs running the old SW to close) and moves straight to activate.
+// Fired when a new SW version is downloaded. Pre-fetches and caches all listed
+// assets. precache() never rejects (allSettled), so activation always proceeds
+// even if some assets failed — deliberate, so the worker survives to report the
+// gap instead of failing silently like a rejected addAll would.
+// skipWaiting() skips the normal waiting phase (where the new SW would wait for
+// all tabs running the old SW to close) and moves straight to activate.
 self.addEventListener("install", function (event) {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
-      return cache.addAll(urlsToCache);
-    }),
-  );
+  event.waitUntil(precache());
   self.skipWaiting();
 });
 
@@ -66,37 +78,67 @@ self.addEventListener("activate", function (event) {
 });
 
 // LIFECYCLE: FETCH
-// Intercepts every network request made by the page. Strategy here is cache-first:
-// serve from cache if available, fall through to the network if not.
-// Only responses with status 200 and type "basic" (same-origin) or "cors"
-// (cross-origin with CORS headers, e.g. Google Fonts) are considered valid.
-// Opaque responses (no-cors cross-origin, status 0) are passed through as-is
-// but not cached, since we can't inspect them.
+// Intercepts every request. Cache-first for everything: serve from cache if
+// present, else go to the network (we only ever cache the precached assets, so
+// the network response is passed through, not stored). Navigation requests get
+// an extra fallback to the cached shell so the app still boots offline.
 self.addEventListener("fetch", function (event) {
+  var request = event.request;
+
+  // Navigation requests (launching the PWA, reloads) get special handling: if the
+  // exact URL isn't cached — e.g. Android appends ?source=pwa to start_url, which
+  // wouldn't byte-match the cached "./" — fall back to the cached shell so the app
+  // still boots offline instead of showing the browser's offline page. Vicy caches
+  // "./" (not "./index.html"), so that's the fallback target.
+  if (request.mode === "navigate") {
+    event.respondWith(
+      caches.match(request, { ignoreSearch: true }).then(function (response) {
+        return (
+          response ||
+          fetch(request).catch(function () {
+            return caches.match("./");
+          })
+        );
+      }),
+    );
+    return;
+  }
+
+  // Cache-first for everything else: serve from cache if present, else network.
   event.respondWith(
-    caches.match(event.request).then(function (response) {
-      if (response) {
-        return response;
-      }
+    caches.match(request).then(function (response) {
+      return response || fetch(request);
+    }),
+  );
+});
 
-      return fetch(event.request).then(function (response) {
-        if (
-          !response ||
-          response.status !== 200 ||
-          (response.type !== "basic" && response.type !== "cors")
-        ) {
-          return response;
-        }
+// Readiness check (source of truth for the "Offline ready" indicator). The page
+// asks via a MessageChannel; we check the LIVE cache against urlsToCache and reply
+// { ready, missing }. Checking the live cache (not an in-memory flag) keeps the
+// answer honest across a fresh worker wake-up and even after the browser evicts
+// cache entries under storage pressure.
+function checkOfflineReady() {
+  return caches.open(CACHE_NAME).then(function (cache) {
+    return Promise.all(
+      urlsToCache.map(function (url) {
+        return cache.match(url, { ignoreSearch: true }).then(function (match) {
+          return match ? null : url;
+        });
+      }),
+    ).then(function (results) {
+      var missing = results.filter(Boolean);
+      return { ready: missing.length === 0, missing: missing };
+    });
+  });
+}
 
-        // Intentionally not caching runtime requests — only the explicitly listed
-        // assets above are cached. Dynamic caching is commented out below as reference.
-        //var responseToCache = response.clone();
-        //caches.open(CACHE_NAME).then(function(cache) {
-        //cache.put(event.request, responseToCache);
-        //});
-
-        return response;
-      });
+self.addEventListener("message", function (event) {
+  if (!event.data || event.data.type !== "CHECK_OFFLINE_READY") return;
+  var port = event.ports[0];
+  if (!port) return;
+  event.waitUntil(
+    checkOfflineReady().then(function (result) {
+      port.postMessage(result);
     }),
   );
 });

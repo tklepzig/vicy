@@ -156,6 +156,31 @@ body {
   color: oklch(0.75 0.15 29);
 }
 
+// Offline-ready indicator (panel footer, always visible). Three honest states,
+// driven from the offline-status block in index.html off the service worker's
+// live-cache check: dim "Caching…" while in progress, accent "Offline ready"
+// once every asset is cached, the hint-red for a precache shortfall or a failed
+// worker. English on purpose — infrastructure status, not user-facing copy.
+.offline-status {
+  font-size: var(--text-xs);
+  color: var(--fg-body);
+  opacity: 0.6;
+
+  &[hidden] {
+    display: none;
+  }
+
+  &.ready {
+    color: var(--color100);
+    opacity: 1;
+  }
+
+  &.warn {
+    color: oklch(0.75 0.15 29);
+    opacity: 1;
+  }
+}
+
 .mode-toggle {
   display: grid;
 
