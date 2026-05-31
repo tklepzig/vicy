@@ -14,13 +14,8 @@
     <link href="style.min.css" rel="stylesheet" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="favicon.ico" />
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("sw.js");
-        });
-      }
-    </script>
+    <!-- SW registration lives in the offline-status block at the end of <body>
+         so a registration failure can be caught and surfaced via the badge. -->
   </head>
   <body>
     <div id="root">
@@ -112,162 +107,12 @@
             </div>
           </div>
         </article>
-        <footer></footer>
+        <footer>
+          <span class="offline-status" id="offline-status" hidden></span>
+        </footer>
       </div>
     </div>
 
-    <script>
-      // Hack to allow running the mostly node-targeted js file vigenere.js in the browser
-      var exports = {};
-    </script>
-    <script src="vigenere.js"></script>
-    <script>
-      const mobileQuery = window.matchMedia("(max-width: 640px)");
-      const compoundCommands = document.querySelector(".compound-commands");
-      const updateToggleLayout = () =>
-        compoundCommands.classList.toggle("vertical", !mobileQuery.matches);
-      mobileQuery.addEventListener("change", updateToggleLayout);
-      updateToggleLayout();
-
-      const key = document.getElementById("key");
-      const keyConfirm = document.getElementById("key-confirm");
-      const text = document.getElementById("text");
-      const cipher = document.getElementById("cipher");
-      const encryptBtn = document.getElementById("encrypt-btn");
-      const decryptBtn = document.getElementById("decrypt-btn");
-      const keyHint = document.getElementById("key-hint");
-      const textHint = document.getElementById("text-hint");
-      const cipherHint = document.getElementById("cipher-hint");
-      const copyBtn = document.getElementById("copy-btn");
-      const keyToggleBtn = document.getElementById("key-toggle-btn");
-      const keyCollapsible = document.getElementById("key-collapsible");
-
-      let mode = "encrypt";
-      let keyConfirmBlurred = false;
-      let keyCollapsed = false;
-
-      const collapseKey = (collapsed, animated = true) => {
-        if (!animated) keyCollapsible.style.transition = "none";
-        keyCollapsed = collapsed;
-        keyCollapsible.classList.toggle("collapsed", collapsed);
-        keyToggleBtn.classList.toggle("is-active", !collapsed);
-        keyToggleBtn.classList.toggle(
-          "key-set",
-          collapsed && isValidKey(key.value, keyConfirm.value),
-        );
-        if (!animated)
-          requestAnimationFrame(() =>
-            requestAnimationFrame(() => (keyCollapsible.style.transition = "")),
-          );
-      };
-
-      keyToggleBtn.addEventListener("click", () => collapseKey(!keyCollapsed));
-
-      const setMode = (newMode) => {
-        mode = newMode;
-        encryptBtn.classList.toggle("is-active", mode === "encrypt");
-        decryptBtn.classList.toggle("is-active", mode === "decrypt");
-        copyBtn.hidden = true;
-        recalculate();
-      };
-
-      const recalculate = () => {
-        const keyValid = isValidKey(key.value, keyConfirm.value);
-
-        const keyHasBadChars =
-          (key.value.length > 0 && hasInvalidChars(key.value)) ||
-          (keyConfirm.value.length > 0 && hasInvalidChars(keyConfirm.value));
-
-        if (keyHasBadChars) {
-          keyHint.textContent = "Key contains invalid characters";
-          keyHint.hidden = false;
-        } else if (!keyConfirmBlurred) {
-          keyHint.hidden = true;
-        } else if (key.value.length < 2) {
-          keyHint.textContent = "Key too short (min. 2 chars)";
-          keyHint.hidden = false;
-        } else if (key.value !== keyConfirm.value) {
-          keyHint.textContent = "Keys don't match";
-          keyHint.hidden = false;
-        } else {
-          keyHint.hidden = true;
-        }
-
-        encryptBtn.disabled = !keyValid;
-        decryptBtn.disabled = !keyValid;
-        text.readOnly = !keyValid || mode === "decrypt";
-        cipher.readOnly = !keyValid || mode === "encrypt";
-
-        if (mode === "encrypt") {
-          cipher.value =
-            keyValid && isValidText(text.value)
-              ? encrypt(text.value, key.value)
-              : "";
-        } else {
-          text.value =
-            keyValid && isValidText(cipher.value)
-              ? decrypt(cipher.value, key.value)
-              : "";
-        }
-
-        const textHasBadChars =
-          !text.readOnly &&
-          text.value.length > 0 &&
-          hasInvalidChars(text.value);
-        textHint.textContent = textHasBadChars
-          ? "Contains invalid characters"
-          : "";
-        textHint.hidden = !textHasBadChars;
-
-        const cipherHasBadChars =
-          !cipher.readOnly &&
-          cipher.value.length > 0 &&
-          hasInvalidChars(cipher.value);
-        cipherHint.textContent = cipherHasBadChars
-          ? "Contains invalid characters"
-          : "";
-        cipherHint.hidden = !cipherHasBadChars;
-
-        const output = mode === "encrypt" ? cipher : text;
-        copyBtn.hidden = output.value.length === 0;
-        if (keyValid) sessionStorage.setItem("vicy_key", key.value);
-        keyToggleBtn.classList.toggle("key-set", keyCollapsed && keyValid);
-      };
-
-      const copyToClipboard = (button, content) => {
-        navigator.clipboard.writeText(content).then(() => {
-          button.textContent = "Copied";
-          setTimeout(() => (button.textContent = "Copy"), 1500);
-        });
-      };
-
-      copyBtn.addEventListener("click", () => {
-        const output = mode === "encrypt" ? cipher : text;
-        copyToClipboard(copyBtn, output.value);
-      });
-
-      keyConfirm.addEventListener("blur", () => {
-        keyConfirmBlurred = true;
-        recalculate();
-      });
-      encryptBtn.addEventListener("click", () => setMode("encrypt"));
-      decryptBtn.addEventListener("click", () => setMode("decrypt"));
-      key.addEventListener("input", recalculate);
-      keyConfirm.addEventListener("input", recalculate);
-      text.addEventListener("input", recalculate);
-      cipher.addEventListener("input", recalculate);
-
-      // Pre-fill from sessionStorage on load (same-tab reload)
-      const sessionKey = sessionStorage.getItem("vicy_key");
-      if (sessionKey) {
-        key.value = sessionKey;
-        keyConfirm.value = sessionKey;
-        keyConfirmBlurred = true;
-      }
-
-      setMode("encrypt");
-      collapseKey(!!sessionKey, false);
-      (sessionKey ? text : key).focus();
-    </script>
+    <script type="module" src="ui.js"></script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
     "types": ["jest"]
   },
   "include": ["vigenere.ts", "vigenere.test.ts"]
