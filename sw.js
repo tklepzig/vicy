@@ -11,6 +11,7 @@ var urlsToCache = [
   "./manifest.webmanifest",
   "./favicon.ico",
   "./sw.js",
+  "./ui.js",
   "./vigenere.js",
   "./style.min.css",
   "./assets/logo-192.png",
