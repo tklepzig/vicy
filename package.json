@@ -4,12 +4,13 @@
   "type": "module",
   "scripts": {
     "start": "npx --yes live-server .",
-    "build": "tsc && sass --load-path=node_modules --quiet-deps style.scss:style.min.css -s compressed --no-source-map",
+    "build": "tsc --noEmit && tsc -p tsconfig.sw.json --noEmit && sass --load-path=node_modules --quiet-deps style.scss:style.min.css -s compressed --no-source-map && offline-kit build",
     "test": "tsc && npx --yes jest",
-    "dev": "npx --yes concurrently -n tsc,sass,server -c cyan,magenta,green \"npm run tsc:watch\" \"npm run style:watch\" \"npm run start\"",
-    "dev:no-sw": "npx --yes concurrently -n tsc,sass,server -c cyan,magenta,green \"npm run tsc:watch\" \"npm run style:watch\" \"npm run start -- --middleware=$PWD/scripts/disable-sw.js\"",
-    "tsc:watch": "tsc -w",
-    "style:watch": "sass --load-path=node_modules --quiet-deps --watch style.scss:style.min.css -s compressed"
+    "dev": "npm run build && npx --yes concurrently -n tsc,sass,pwa,server -c cyan,magenta,yellow,green \"npm run tsc:watch\" \"npm run style:watch\" \"npm run pwa:watch\" \"npm run start\"",
+    "dev:no-sw": "npm run build && npx --yes concurrently -n tsc,sass,pwa,server -c cyan,magenta,yellow,green \"npm run tsc:watch\" \"npm run style:watch\" \"npm run pwa:watch\" \"npm run start -- --middleware=$PWD/scripts/disable-sw.js\"",
+    "tsc:watch": "tsc -w --noEmit",
+    "style:watch": "sass --load-path=node_modules --quiet-deps --watch style.scss:style.min.css -s compressed",
+    "pwa:watch": "offline-kit build --watch"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
@@ -18,5 +19,8 @@
     "sass": "^1.99.0",
     "ts-jest": "^29.4.9",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@tklepzig/offline-kit": "^0.1.0"
   }
 }
