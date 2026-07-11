@@ -21,6 +21,6 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@tklepzig/offline-kit": "^0.1.0"
+    "@tklepzig/offline-kit": "^0.1.2"
   }
 }
